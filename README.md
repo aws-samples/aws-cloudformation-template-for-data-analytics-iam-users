@@ -1,11 +1,6 @@
-## My Project
+## AWS Cloudformation template for "Building a Serverless Data Analytics Platform on AWS" Workshop
+This Cloudformation template is to help create IAM users and roles for the "Building a Serverless Data Analytics Platform on AWS" Workshop. This will help developers quickly create the correct IAM users with the correct permissions in order to go through the workshop.
 
-TODO: Fill this README out!
-
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
 
 ## Security
 
