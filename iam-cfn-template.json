@@ -1,0 +1,332 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Metadata": {
+        "AWS::CloudFormation::Designer": {
+            "86e67a58-e01f-40d1-a0a1-f8e54db0fd6d": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 50,
+                    "y": 160
+                },
+                "z": 0,
+                "embeds": []
+            },
+            "524b2e62-d458-408e-aea3-5912bcda396e": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 197,
+                    "y": 170
+                },
+                "z": 0,
+                "embeds": []
+            },
+            "d541c007-354f-4d89-848d-d5dc3857fe27": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": -40,
+                    "y": 240
+                },
+                "z": 0,
+                "embeds": []
+            }
+        }
+    },
+    "Resources": {
+        "datalakeAdmin": {
+            "Type": "AWS::IAM::User",
+            "Properties": {
+                "LoginProfile": {
+                    "Password": "admin1!"
+                },
+                "UserName": "datalake_admin",
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/AWSGlueConsoleFullAccess",
+                    "arn:aws:iam::aws:policy/AWSGlueConsoleSageMakerNotebookFullAccess",
+                    "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole",
+                    "arn:aws:iam::aws:policy/AWSLakeFormationDataAdmin",
+                    "arn:aws:iam::aws:policy/AmazonAthenaFullAccess",
+                    "arn:aws:iam::aws:policy/CloudWatchLogsReadOnlyAccess",
+                    "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+                ],
+                "Policies": [
+                    {
+                        "PolicyName": "LF-Workflow-Policy",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "iam:PassRole"
+                                    ],
+                                    "Resource": [
+                                        {
+                                            "Fn::Join": [
+                                                "",
+                                                [
+                                                    "arn:aws:iam::",
+                                                    {
+                                                        "Ref": "AWS::AccountId"
+                                                    },
+                                                    ":role/LakeFormationWorkflowRole"
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "PolicyName": "LakeFormationSLR",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": "iam:CreateServiceLinkedRole",
+                                    "Resource": "*",
+                                    "Condition": {
+                                        "StringEquals": {
+                                            "iam:AWSServiceName": "lakeformation.amazonaws.com"
+                                        }
+                                    }
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "iam:PutRolePolicy"
+                                    ],
+                                    "Resource": [
+                                        {
+                                            "Fn::Join": [
+                                                "",
+                                                [
+                                                    "arn:aws:iam::",
+                                                    {
+                                                        "Ref": "AWS::AccountId"
+                                                    },
+                                                    ":role/aws-service-role/lakeformation.amazonaws.com/AWSServiceRoleForLakeFormationDataAccess"
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "PolicyName": "GlueFullReadAccess",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Sid": "GlueFullReadAccess",
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "lakeformation:GetDataAccess",
+                                        "glue:GetTable",
+                                        "glue:GetTables",
+                                        "glue:SearchTables",
+                                        "glue:GetDatabase",
+                                        "glue:GetDatabases",
+                                        "glue:GetPartitions"
+                                    ],
+                                    "Resource": "*"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "PolicyName": "LakeFormationDataAccess",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Sid": "LakeFormationDataAccess",
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "lakeformation:GetDataAccess"
+                                    ],
+                                    "Resource": "*"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "86e67a58-e01f-40d1-a0a1-f8e54db0fd6d"
+                }
+            }
+        },
+        "datalakeUser": {
+            "Type": "AWS::IAM::User",
+            "Properties": {
+                "LoginProfile": {
+                    "Password": "user1!"
+                },
+                "UserName": "datalake_user",
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/AmazonAthenaFullAccess",
+                    "arn:aws:iam::aws:policy/AmazonRedshiftReadOnlyAccess",
+                    "arn:aws:iam::aws:policy/AmazonRedshiftQueryEditor"
+                ],
+                "Policies": [
+                    {
+                        "PolicyName": "DatalakeUserBasic",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "lakeformation:GetDataAccess",
+                                        "glue:GetTable",
+                                        "glue:GetTables",
+                                        "glue:SearchTables",
+                                        "glue:GetDatabase",
+                                        "glue:GetDatabases",
+                                        "glue:GetPartitions"
+                                    ],
+                                    "Resource": "*"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "PolicyName": "GlueFullReadAccess",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Sid": "GlueFullReadAccess",
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "lakeformation:GetDataAccess",
+                                        "glue:GetTable",
+                                        "glue:GetTables",
+                                        "glue:SearchTables",
+                                        "glue:GetDatabase",
+                                        "glue:GetDatabases",
+                                        "glue:GetPartitions"
+                                    ],
+                                    "Resource": "*"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "PolicyName": "LakeFormationDataAccess",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Sid": "LakeFormationDataAccess",
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "lakeformation:GetDataAccess"
+                                    ],
+                                    "Resource": "*"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "524b2e62-d458-408e-aea3-5912bcda396e"
+                }
+            }
+        },
+        "LakeFormationWorkflowRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "glue.amazonaws.com",
+                                    "lakeformation.amazonaws.com",
+                                    "firehose.amazonaws.com"
+                                ]
+                            },
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
+                },
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole",
+                    "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess",
+		"arn:aws:iam::aws:policy/AmazonS3FullAccess"
+                ],
+                "Policies": [
+                    {
+                        "PolicyName": "LF-DataAccess-Policy",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "lakeformation:GetDataAccess",
+                                        "lakeformation:GrantPermissions"
+                                    ],
+                                    "Resource": "*"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "PolicyName": "LF-Workflow-Policy",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "iam:PassRole"
+                                    ],
+                                    "Resource": [
+                                        {
+                                            "Fn::Join": [
+                                                "",
+                                                [
+                                                    "arn:aws:iam::",
+                                                    {
+                                                        "Ref": "AWS::AccountId"
+                                                    },
+                                                    ":role/LakeFormationWorkflowRole"
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "RoleName": "LakeFormationWorkflowRole"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "d541c007-354f-4d89-848d-d5dc3857fe27"
+                }
+            }
+        }
+    }
+}
