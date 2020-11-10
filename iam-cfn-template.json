@@ -203,44 +203,6 @@
                                 }
                             ]
                         }
-                    },
-                    {
-                        "PolicyName": "GlueFullReadAccess",
-                        "PolicyDocument": {
-                            "Version": "2012-10-17",
-                            "Statement": [
-                                {
-                                    "Sid": "GlueFullReadAccess",
-                                    "Effect": "Allow",
-                                    "Action": [
-                                        "lakeformation:GetDataAccess",
-                                        "glue:GetTable",
-                                        "glue:GetTables",
-                                        "glue:SearchTables",
-                                        "glue:GetDatabase",
-                                        "glue:GetDatabases",
-                                        "glue:GetPartitions"
-                                    ],
-                                    "Resource": "*"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "PolicyName": "LakeFormationDataAccess",
-                        "PolicyDocument": {
-                            "Version": "2012-10-17",
-                            "Statement": [
-                                {
-                                    "Sid": "LakeFormationDataAccess",
-                                    "Effect": "Allow",
-                                    "Action": [
-                                        "lakeformation:GetDataAccess"
-                                    ],
-                                    "Resource": "*"
-                                }
-                            ]
-                        }
                     }
                 ]
             },
@@ -272,7 +234,7 @@
                 "ManagedPolicyArns": [
                     "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole",
                     "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess",
-		"arn:aws:iam::aws:policy/AmazonS3FullAccess"
+                    "arn:aws:iam::aws:policy/AmazonS3FullAccess"
                 ],
                 "Policies": [
                     {
