@@ -45,7 +45,7 @@
             "Type": "AWS::IAM::User",
             "Properties": {
                 "LoginProfile": {
-                    "Password": "admin1!"
+                    "Password": "Admin1234!"
                 },
                 "UserName": "datalake_admin",
                 "ManagedPolicyArns": [
@@ -174,7 +174,7 @@
             "Type": "AWS::IAM::User",
             "Properties": {
                 "LoginProfile": {
-                    "Password": "user1!"
+                    "Password": "User1234!"
                 },
                 "UserName": "datalake_user",
                 "ManagedPolicyArns": [
